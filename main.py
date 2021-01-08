@@ -13,29 +13,25 @@ def get_file_name():
 
 
 file_name = get_file_name()
-file_rows = list()
 
-
-# Try to open file
-try:
-    file = open(file_name)
-
-    file_reader = csv.reader(file)
-    for row in file_reader:
-        print('Row #' + str(exampleReader.line_num) + ' ' + str(row))
-        file_rows.append(row)
-except Error as e:
-    print("Error while opening CSV file ", e)
+# Open file
+with open(file_name, "r") as f:
+    reader = csv.reader(f)
+    columns = next(reader)
+    file_rows = list(reader)
 
 
 # Establish database connection
-pwd = input("Please enter the database password: ")
-'''
+username = input("Please enter your database username: ")
+pwd = getpass.getpass(prompt="Please enter the database password: ", stream=None)
+database = input("Please enter the database name: ")
+
 try:
     connection = mysql.connector.connect(host='localhost',
-                                         database='Electronics',
-                                         user='pynative',
-                                         password='pynative@#29')
+                                         database=database,
+                                         user=username,
+                                         password=pwd)
+
     if connection.is_connected():
         db_Info = connection.get_server_info()
         print("Connected to MySQL Server version ", db_Info)
@@ -47,5 +43,11 @@ try:
 except Error as e:
     print("Error while connecting to MySQL", e)
 
+# Insert data into table
+table_name = file_name.split('.')[0]
 
-'''
+
+create_table_statement = ""
+
+
+cursor.execute("CREATE TABLE %s", data)
